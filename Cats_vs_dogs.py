@@ -34,6 +34,9 @@ def linear_forward(A, W, b):
 def sigmoid(z):
     s = 1/(1+np.exp(-z))
     return s
+def relu(z):
+    #fill this in
+    pass
 
 def linear_activation_forward(A_prev, W, b, activation):
     if activation == 'sigmoid':
@@ -41,13 +44,26 @@ def linear_activation_forward(A_prev, W, b, activation):
         A = sigmoid(Z)
     elif activation == 'relu':
         raise Exception("You haven't implemented RELU yet.")
+        #Z, linear_cache = linear_forward(A_prev, W, b)
+        #A, activation_cache = relu(Z)
     return A
+
 def L_model_forward(X, parameters):
     caches = []
     A = X
     L = len(parameters)//2
     for l in range(1,L):
         A_prev = A
-        A, cache = linear_activation_forward(A_prev, parameters['W' + str(l)], parameters['b' + str(l)], activation='sigmoid')
+        A, cache = linear_activation_forward(A_prev, parameters['W' + str(l)], parameters['b' + str(l)], activation='relu')
         caches.append(cache)
-        #finish this function
+
+    AL, cache = linear_activation_forward(A, parameters['W' + str(L)], parameters['b' + str(L)], activation='sigmoid')
+    caches.append(cache)
+
+    return Al, caches
+
+def compute_cost(AL, Y):
+    m = Y.shape[1]
+    cost = (-1/m) * np.sum(np.multiply(Y, np.log(AL))+np.multiply(1-Y, np.log(1-AL)))
+    cost = np.squeeze(cost)
+    return cost
